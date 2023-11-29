@@ -1,20 +1,30 @@
 #pragma once
 
 #include <assert.h>
+#include <stdint.h>
 
-typedef unsigned char byte;
-typedef unsigned char u8;
-typedef unsigned short u16;
-typedef unsigned int u32;
-typedef unsigned long u64;
+typedef uint8_t u8;
+typedef uint16_t u16;
+typedef uint32_t u32;
+typedef uint64_t u64;
+typedef char byte;
 typedef char i8;
-typedef short i16;
-typedef int i32;
-typedef long i64;
+typedef int16_t i16;
+typedef int32_t i32;
+typedef int64_t i64;
 typedef float f32;
 typedef double f64;
 
-#define ASSERT(exp) assert(exp)
+#define THREAD_LOCAL __thread
 
-#define I32_MAX 2147483647
-#define I32_MIN -2147483647
+#define TARGET_FPS 60
+
+#define VSYNC_AUTO -1
+#define VSYNC_OFF 0
+#define VSYNC_ON 1
+
+#define W_NAME "SPACE GAME"
+#define W_WIDTH 1200
+#define W_HEIGHT 675
+#define W_CENTERED SDL_WINDOWPOS_CENTERED
+#define W_FLAGS SDL_WINDOW_OPENGL

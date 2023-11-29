@@ -1,6 +1,11 @@
+/*
+  Arena Allocator
+  Written by Daniel Goldenberg
+*/
+
 #pragma once
 
-#include "common.hpp"
+#include "../src/common.hpp"
 
 class Arena
 {

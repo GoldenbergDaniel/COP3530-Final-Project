@@ -1,6 +1,9 @@
-#include <stdio.h>
+/*
+  Arena Allocator
+  Written by Daniel Goldenberg
+*/
 
-#include "common.hpp"
+#include "../src/common.hpp"
 #include "arena.hpp"
 
 Arena::Arena()
