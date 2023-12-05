@@ -3,14 +3,15 @@
   Written by Daniel Goldenberg
 */
 
+#include <stdlib.h>
 #include <math.h>
 
-#include "../src/common.hpp"
+#include "../../src/common.hpp"
 #include "math.hpp"
 
 // @Scalar =====================================================================================
 
-inline 
+ 
 f32 lerp_1f(f32 curr, f32 target, f32 rate)
 {
   return curr + (target - curr) * rate;
@@ -18,43 +19,49 @@ f32 lerp_1f(f32 curr, f32 target, f32 rate)
 
 // @Vec2F ======================================================================================
 
-inline
+
 Vec2F v2f(f32 x, f32 y)
 {
   return (Vec2F) {x, y};
 }
 
-inline
+
+Vec2I v2i(i32 x, i32 y)
+{
+  return (Vec2I) {x, y};
+}
+
+
 Vec2F add_2f(Vec2F a, Vec2F b)
 {
   return (Vec2F) {a.x + b.x, a.y + b.y};
 }
 
-inline
+
 Vec2F sub_2f(Vec2F a, Vec2F b)
 {
   return (Vec2F) {a.x - b.x, a.y - b.y};
 }
 
-inline
+
 Vec2F mul_2f(Vec2F a, Vec2F b)
 {
   return (Vec2F) {a.x * b.x, a.y * b.y};
 }
 
-inline
+
 Vec2F div_2f(Vec2F a, Vec2F b)
 {
   return (Vec2F) {a.x / b.x, a.y / b.y};
 }
 
-inline
+
 f32 dot_2f(Vec2F a, Vec2F b)
 {
   return (a.x * b.x) + (a.y * b.y);
 }
 
-inline
+
 f32 cross_2f(Vec2F a, Vec2F b)
 {
   f32 result;
@@ -63,89 +70,135 @@ f32 cross_2f(Vec2F a, Vec2F b)
   return result;
 }
 
-inline
+
 Vec2F scale_2f(Vec2F v, f32 scale)
 {
   return (Vec2F) {v.x * scale, v.y * scale};
 }
 
-inline
+
+Vec2F shift_2f(Vec2F v, f32 shift)
+{
+  return (Vec2F) {v.x + shift, v.y + shift};
+}
+
+
+Vec2F transform_2f(Vec2F v, Mat2x2F m)
+{
+  Vec2F result = {0};
+  result.x += m.elements[0][0] * v.elements[0];
+  result.x += m.elements[0][1] * v.elements[1];
+  result.y += m.elements[1][0] * v.elements[0];
+  result.y += m.elements[1][1] * v.elements[1];
+
+  return result;
+}
+
+
 f32 magnitude_2f(Vec2F v)
 {
   return sqrtf(powf(v.x, 2.0f) + powf(v.y, 2.0f));
 }
 
-inline
+
 f32 magnitude_squared_2f(Vec2F v)
 {
   return powf(v.x, 2.0f) + powf(v.y, 2.0f);
 }
 
-inline
+
 f32 distance_2f(Vec2F a, Vec2F b)
 {
   Vec2F v = sub_2f(b, a);
   return sqrtf(powf(v.x, 2.0f) + powf(v.y, 2.0f));
 }
 
-inline
+
 f32 distance_squared_2f(Vec2F a, Vec2F b)
 {
   Vec2F v = sub_2f(b, a);
   return powf(v.x, 2.0f) + powf(v.y, 2.0f);
 }
 
-inline
+
 Vec2F normalize_2f(Vec2F v)
 {
   return scale_2f(v, 1.0f / magnitude_2f(v));
 }
 
-inline
+
+Vec2F project_2f(Vec2F a, Vec2F b)
+{
+  return scale_2f(b, dot_2f(a, b) / dot_2f(b, b));
+}
+
+
 Vec2F lerp_2f(Vec2F curr, Vec2F target, f32 rate)
 {
   return scale_2f(sub_2f(target, curr), rate);
 }
 
-// @Vec3F ===================================================================================
 
-inline
+Vec2F normal_2f(Vec2F a, Vec2F b)
+{
+  return normalize_2f(v2f(-(b.y - a.y), (b.x - a.x)));
+}
+
+
+Vec2F midpoint_2f(Vec2F a, Vec2F b)
+{
+  return v2f((a.x+b.x)/2.0f, (a.y+b.y)/2.0f);
+}
+
+Vec2F intersection_2f(Vec2F a, Vec2F b, Vec2F c, Vec2F d)
+{
+  Vec2F ab = sub_2f(b, a);
+  Vec2F cd = sub_2f(d, c);
+  Vec2F ac = sub_2f(c, a);
+  f32 t = cross_2f(ac, cd) / cross_2f(ab, cd);
+
+  return add_2f(a, scale_2f(ab, t));
+}
+
+// @Vec3F ======================================================================================
+
+
 Vec3F v3f(f32 x, f32 y, f32 z)
 {
   return (Vec3F) {x, y, z};
 }
 
-inline
+
 Vec3F add_3f(Vec3F a, Vec3F b)
 {
   return (Vec3F) {a.x + b.x, a.y + b.y, a.z + b.z};
 }
 
-inline
+
 Vec3F sub_3f(Vec3F a, Vec3F b)
 {
   return (Vec3F) {a.x - b.x, a.y - b.y, a.z - b.z};
 }
 
-inline
+
 Vec3F mul_3f(Vec3F a, Vec3F b)
 {
   return (Vec3F) {a.x * b.x, a.y * b.y, a.z * b.z};
 }
 
-inline
+
 Vec3F div_3f(Vec3F a, Vec3F b)
 {
   return (Vec3F) {a.x / b.x, a.y / b.y, a.z / b.z};
 }
 
-inline
+
 f32 dot_3f(Vec3F a, Vec3F b)
 {
   return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
 }
 
-inline
+
 Vec3F cross_3f(Vec3F a, Vec3F b)
 {
   Vec3F result;
@@ -156,7 +209,7 @@ Vec3F cross_3f(Vec3F a, Vec3F b)
   return result;
 }
 
-inline
+
 Vec3F scale_3f(Vec3F v, f32 scale)
 {
   return (Vec3F) {v.x * scale, v.y * scale, v.z * scale};
@@ -165,93 +218,96 @@ Vec3F scale_3f(Vec3F v, f32 scale)
 Vec3F transform_3f(Vec3F v, Mat3x3F m)
 {
   Vec3F result = {0};
-  for (u8 c = 0; c < 3; c++)
-  {
-    result.x += m.elements[0][c] * v.elements[c];
-    result.y += m.elements[1][c] * v.elements[c];
-    result.z += m.elements[2][c] * v.elements[c];
-  }
+  result.x += m.elements[0][0] * v.elements[0];
+  result.x += m.elements[0][1] * v.elements[1];
+  result.x += m.elements[0][2] * v.elements[2];
+  result.y += m.elements[1][0] * v.elements[0];
+  result.y += m.elements[1][1] * v.elements[1];
+  result.y += m.elements[1][2] * v.elements[2];
+  result.z += m.elements[2][0] * v.elements[0];
+  result.z += m.elements[2][1] * v.elements[1];
+  result.z += m.elements[2][2] * v.elements[2];
 
   return result;
 }
 
-inline
+
 f32 magnitude_3f(Vec3F v)
 {
   return sqrtf(powf(v.x, 2.0f) + powf(v.y, 2.0f) + powf(v.z, 2.0f));
 }
 
-inline
+
 f32 magnitude_squared_3f(Vec3F v)
 {
   return powf(v.x, 2.0f) + powf(v.y, 2.0f) + powf(v.z, 2.0f);
 }
 
-inline
+
 f32 distance_3f(Vec3F a, Vec3F b)
 {
   Vec3F v = sub_3f(b, a);
   return sqrtf(powf(v.x, 2.0f) + powf(v.y, 2.0f) + powf(v.z, 2.0f));
 }
 
-inline
+
 f32 distance_squared_3f(Vec3F a, Vec3F b)
 {
   Vec3F v = sub_3f(b, a);
   return powf(v.x, 2.0f) + powf(v.y, 2.0f) + powf(v.z, 2.0f);
 }
 
-inline
+
 Vec3F normalize_3f(Vec3F v)
 {
   return scale_3f(v, 1.0f / magnitude_3f(v));
 }
 
-inline
+
 Vec3F lerp_3f(Vec3F curr, Vec3F target, f32 rate)
 {
   return scale_3f(sub_3f(target, curr), rate);
 }
 
-// @Vec4F ===================================================================================
+// @Vec4F ======================================================================================
 
-inline
+
 Vec4F v4f(f32 x, f32 y, f32 z, f32 w)
 {
   return (Vec4F) {x, y, z, w};
 }
 
-inline
+
 Vec4F add_4f(Vec4F a, Vec4F b)
 {
   return (Vec4F) {a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w};
 }
 
-inline
+
 Vec4F sub_4f(Vec4F a, Vec4F b)
 {
   return (Vec4F) {a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w};
 }
 
-inline
+
 Vec4F mul_4f(Vec4F a, Vec4F b)
 {
   return (Vec4F) {a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w};
 }
 
-inline
+
 Vec4F div_4f(Vec4F a, Vec4F b)
 {
   return (Vec4F) {a.x / b.x, a.y / b.y, a.z / b.z, a.w / b.w};
 }
 
-inline
+
 f32 dot_4f(Vec4F a, Vec4F b)
 {
   return (a.x * b.x) + (a.y * b.y) + (a.z * b.z) + (a.w * b.w);
 }
 
-inline
+
 Vec4F scale_4f(Vec4F v, f32 scale)
 {
   return (Vec4F) {v.x * scale, v.y * scale, v.z * scale, v.w * scale};
@@ -260,53 +316,140 @@ Vec4F scale_4f(Vec4F v, f32 scale)
 Vec4F transform_4f(Vec4F v, Mat4x4F m)
 {
   Vec4F result = {0};
-
-  for (u8 c = 0; c < 4; c++)
-  {
-    result.x += m.elements[0][c] * v.elements[c];
-    result.y += m.elements[1][c] * v.elements[c];
-    result.z += m.elements[2][c] * v.elements[c];
-    result.w += m.elements[3][c] * v.elements[c];
-  }
+  result.x += m.elements[0][0] * v.elements[0];
+  result.x += m.elements[0][1] * v.elements[1];
+  result.x += m.elements[0][2] * v.elements[2];
+  result.x += m.elements[0][3] * v.elements[3];
+  result.y += m.elements[1][0] * v.elements[0];
+  result.y += m.elements[1][1] * v.elements[1];
+  result.y += m.elements[1][2] * v.elements[2];
+  result.y += m.elements[1][3] * v.elements[3];
+  result.z += m.elements[2][0] * v.elements[0];
+  result.z += m.elements[2][1] * v.elements[1];
+  result.z += m.elements[2][2] * v.elements[2];
+  result.z += m.elements[2][3] * v.elements[3];
+  result.w += m.elements[3][0] * v.elements[0];
+  result.w += m.elements[3][1] * v.elements[1];
+  result.w += m.elements[3][2] * v.elements[2];
+  result.w += m.elements[3][3] * v.elements[3];
 
   return result;
 }
 
-inline
+
 f32 magnitude_4f(Vec4F v)
 {
   return sqrtf(powf(v.x, 2.0f) + powf(v.y, 2.0f) + powf(v.z, 2.0f) + powf(v.z, 2.0f));
 }
 
-inline
+
 f32 magnitude_squared_4f(Vec4F v)
 {
   return powf(v.x, 2.0f) + powf(v.y, 2.0f) + powf(v.z, 2.0f) + powf(v.z, 2.0f);
 }
 
-inline
+
 f32 distance_4f(Vec4F a, Vec4F b)
 {
   Vec4F v = sub_4f(b, a);
   return sqrtf(powf(v.x, 2.0f) + powf(v.y, 2.0f) + powf(v.z, 2.0f) + powf(v.w, 2.0f));
 }
 
-inline
+
 f32 distance_squared_4f(Vec4F a, Vec4F b)
 {
   Vec4F v = sub_4f(b, a);
   return powf(v.x, 2.0f) + powf(v.y, 2.0f) + powf(v.z, 2.0f) + powf(v.w, 2.0f);
 }
 
-inline
+
 Vec4F normalize_4f(Vec4F v)
 {
   return scale_4f(v, 1.0f / magnitude_4f(v));
 }
 
-// @Mat3x3F =================================================================================
+// @Mat2x2F =================================================================================
 
-inline
+Mat2x2F m2x2f(f32 k)
+{
+  return (Mat2x2F)
+  {
+    {
+      {k, 0},
+      {0, k}
+    }
+  };
+}
+
+Mat2x2F rows_2x2f(Vec2F v1, Vec2F v2)
+{
+  return (Mat2x2F)
+  {
+    {
+      {v1.x, v1.y},
+      {v2.x, v2.y},
+    }
+  };
+}
+
+Mat2x2F cols_2x2f(Vec2F v1, Vec2F v2)
+{
+  return (Mat2x2F)
+  {
+    {
+      {v1.x, v2.x},
+      {v1.y, v2.y},
+    }
+  };
+}
+
+Mat2x2F mul_2x2f(Mat2x2F a, Mat2x2F b)
+{
+  Mat2x2F result = {0};
+
+  for (u8 r = 0; r < 2; r++)
+  {
+    for (u8 c = 0; c < 2; c++)
+    {
+      result.elements[r][c] += a.elements[r][0] * b.elements[0][c];
+      result.elements[r][c] += a.elements[r][1] * b.elements[1][c];
+    }
+  }
+
+  return result;
+}
+
+Mat2x2F transpose_2x2f(Mat2x2F m)
+{
+  Mat2x2F result = m;
+  result.elements[0][1] = m.elements[1][0];
+  result.elements[1][0] = m.elements[0][1];
+
+  return result;
+}
+
+Mat2x2F inverse_2x2f(Mat2x2F m)
+{
+  Mat2x2F result =
+  {
+    {
+      {m.elements[1][1], -m.elements[0][1]},
+      {-m.elements[1][0], m.elements[0][0]}
+    }
+  };
+
+  f32 det = (m.elements[0][0] * m.elements[1][1]) - (m.elements[0][0] * m.elements[1][1]);
+  result.elements[0][0] = (1.0f / det) * result.elements[0][0];
+  result.elements[0][1] = (1.0f / det) * result.elements[0][1];
+  result.elements[1][0] = (1.0f / det) * result.elements[1][0];
+  result.elements[1][1] = (1.0f / det) * result.elements[1][1];
+
+  return result;
+}
+
+// @Mat3x3F ====================================================================================
+
+
 Mat3x3F m3x3f(f32 k)
 {
   return (Mat3x3F)
@@ -319,7 +462,7 @@ Mat3x3F m3x3f(f32 k)
   };
 }
 
-inline
+
 Mat3x3F rows_3x3f(Vec3F v1, Vec3F v2, Vec3F v3)
 {
   return (Mat3x3F)
@@ -332,7 +475,7 @@ Mat3x3F rows_3x3f(Vec3F v1, Vec3F v2, Vec3F v3)
   };
 }
 
-inline
+
 Mat3x3F cols_3x3f(Vec3F v1, Vec3F v2, Vec3F v3)
 {
   return (Mat3x3F)
@@ -425,9 +568,9 @@ Mat3x3F orthographic_3x3f(f32 left, f32 right, f32 bot, f32 top)
   return result;
 }
 
-// @Mat4x4F =================================================================================
+// @Mat4x4F ====================================================================================
 
-inline
+
 Mat4x4F m4x4f(f32 k)
 {
   return (Mat4x4F)
@@ -441,7 +584,7 @@ Mat4x4F m4x4f(f32 k)
   };
 }
 
-inline
+
 Mat4x4F rows_4x4f(Vec4F v1, Vec4F v2, Vec4F v3, Vec4F v4)
 {
   return (Mat4x4F)
@@ -455,7 +598,7 @@ Mat4x4F rows_4x4f(Vec4F v1, Vec4F v2, Vec4F v3, Vec4F v4)
   };
 }
 
-inline
+
 Mat4x4F cols_4x4f(Vec4F v1, Vec4F v2, Vec4F v3, Vec4F v4)
 {
   return (Mat4x4F)
@@ -543,9 +686,34 @@ Mat4x4F orthographic_4x4f(f32 left, f32 right, f32 bot, f32 top)
   return result;
 }
 
+// @Collision ==================================================================================
+
+
+Vec2F rect_center(Vec2F pos, f32 w, f32 h)
+{
+  return (Vec2F)
+  {
+    pos.x + (w / 2.0f),
+    pos.y + (h / 2.0f)
+  };
+}
+
+
+bool range_intersect(f32 min1, f32 max1, f32 min2, f32 max2)
+{
+  return (max1 >= min2) && (max2 >= min1);
+}
+
+bool rect_ranges_intersect(Vec2F p1, Vec2F p2, f32 w1, f32 h1, f32 w2, f32 h2)
+{
+  return range_intersect(p1.x, p1.x+w1, p2.x, p2.x+w2) &&
+         range_intersect(p1.y, p1.y+h1, p2.y, p2.y+h2);
+}
+
+
 #ifdef __cplusplus
 
-// @Overloading =============================================================================
+// @Overloading ================================================================================
 
 Vec2F operator+(Vec2F a, Vec2F b)
 {

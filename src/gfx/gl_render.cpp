@@ -6,7 +6,7 @@
 #include "gl_render.hpp"
 
 typedef R_Shader Shader;
-typedef GL_VAO VAO;
+typedef R_VAO VAO;
 
 static void gl_verify_shader(u32 id, u32 type);
 
@@ -40,13 +40,22 @@ u32 gl_create_vertex_buffer(void *data, u32 size)
   return id;
 }
 
-inline
+u32 gl_create_vertex_buffer(u32 size)
+{
+  u32 id;
+  glGenBuffers(1, &id);
+  glBindBuffer(GL_ARRAY_BUFFER, id);
+  glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
+
+  return id;
+}
+
 void gl_bind_vertex_buffer(u32 id)
 {
   glBindBuffer(GL_ARRAY_BUFFER, id);
 }
 
-inline
+
 void gl_unbind_vertex_buffer(void)
 {
   glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -62,16 +71,21 @@ u32 gl_create_index_buffer(void *data, u32 size)
   return id;
 }
 
-inline
+
 void gl_bind_index_buffer(u32 id)
 {
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
 }
 
-inline
+
 void gl_unbind_index_buffer(void)
 {
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+void gl_generate_vertex_data(R_Vertex *buffer, Vec3F pos, Vec3F color)
+{
+
 }
 
 // @VAO ========================================================================================
@@ -85,19 +99,19 @@ VAO gl_create_vertex_array(u8 attrib_count)
   return (VAO) {id, attrib_count, 0};
 }
 
-inline
+
 void gl_bind_vertex_array(VAO *vao)
 {
   GL_ASSERT(glBindVertexArray(vao->id));
 }
 
-inline
+
 void gl_unbind_vertex_array(void)
 {
   glBindVertexArray(0);
 }
 
-void gl_set_vertex_attribute(VAO *vao, GLenum data_type, u32 count)
+void gl_add_vertex_attribute(VAO *vao, GLenum data_type, u32 count)
 {
   typedef struct Layout Layout;
   struct Layout
@@ -117,7 +131,7 @@ void gl_set_vertex_attribute(VAO *vao, GLenum data_type, u32 count)
     case GL_SHORT: type_size = sizeof (i16); break;
     case GL_INT:   type_size = sizeof (i32); break;
     case GL_FLOAT: type_size = sizeof (f32); break;
-    default: ASSERT(false);
+    default: assert(false);
   }
 
   Layout layout = 
@@ -175,13 +189,13 @@ Shader gl_create_shader(const i8 *vert_src, const i8 *frag_src)
   return (Shader) {id};
 }
 
-inline
+
 void gl_bind_shader(Shader *shader)
 {
   GL_ASSERT(glUseProgram(shader->id));
 }
 
-inline
+
 void gl_unbind_shader(void)
 {
   glUseProgram(0);
@@ -284,14 +298,28 @@ void gl_verify_shader(u32 id, u32 type)
 
 // @Draw =======================================================================================
 
-inline
+void gl_clear_screen(Vec4F color)
+{
+  glClearColor(color.r, color.g, color.b, color.a);
+  glClear(GL_COLOR_BUFFER_BIT);
+}
+
 void gl_draw_triangles(u32 vertex_count)
 {
   GL_ASSERT(glDrawElements(GL_TRIANGLES, vertex_count, GL_UNSIGNED_INT, nullptr));
 }
 
-inline
 void gl_draw_triangles_instanced(u32 vertex_count)
+{
+
+}
+
+void gl_draw_lines()
+{
+  GL_ASSERT(glDrawArrays(GL_LINES, 0, 2));
+}
+
+void gl_draw_lines_instanced()
 {
 
 }

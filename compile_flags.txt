@@ -1,3 +1,4 @@
--I/usr/local/Cellar/sdl2/2.28.2/include
--Iextern
+-I/usr/local/Cellar/sdl2/2.28.4/include
+-Iext
+-xc++
 -std=c++14
