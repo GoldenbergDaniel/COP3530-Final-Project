@@ -27,24 +27,6 @@ i32 main(void)
   state.cities = (City *) state.perm_arena.alloc(sizeof (City) * state.city_count);
   read_city_data(state.cities, "cities.csv");
 
-  // Display the first 5 cities as an example
-  for (u32 i = 0; i < 5 && i < state.city_count; i++)
-  {
-    City *cities = state.cities;
-
-    std::cout << "City ID: " << cities[i].id << ", Population: " << cities[i].population
-          << ", Longitude: " << cities[i].longitude << ", Latitude: " << cities[i].latitude
-          << ", Area (sq miles): " << cities[i].area << "\n";
-    std::cout << "Adjacent Cities: ";
-
-    for (int adjacent_id : cities[i].adjacent)
-    {
-      std::cout << adjacent_id << " ";
-    }
-
-    std::cout << "\n";
-  }
-
   SDL_InitSubSystem(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
   SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);

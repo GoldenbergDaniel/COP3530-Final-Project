@@ -70,7 +70,7 @@ i32 dijkstra_path(Graph *graph, std::vector<i32> &sp, i32 src, i32 end)
     int u = pq.top().second;
     pq.pop();
 
-    for (u32 i = 0; i < graph->edge_count; i++)
+    for (u32 i = 0; graph++ != nullptr; i++)
     {
       int destID = graph->roads[i].dest;
       int weight = graph->roads[i].weight;
